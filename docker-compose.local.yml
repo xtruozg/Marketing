@@ -1,0 +1,38 @@
+# ⚠️ CHỈ DÙNG TEST LOCAL — mô phỏng PHP + MySQL của TinoHost.
+# KHÔNG deploy file này lên hosting. Chạy:  docker compose -f docker-compose.local.yml up -d --build
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: viet_tien
+    ports:
+      - "3307:3306"        # host 3307 -> tránh đụng MySQL cài sẵn (nếu có)
+    volumes:
+      - ./public_html/api/db.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - vt_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-prootpass"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/php.Dockerfile
+    ports:
+      - "8080:80"          # -> http://localhost:8080
+    environment:
+      DB_HOST: db
+      DB_NAME: viet_tien
+      DB_USER: root
+      DB_PASS: rootpass
+    volumes:
+      - ./public_html:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  vt_db_data:

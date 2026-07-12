@@ -1,0 +1,6 @@
+{
+  "name": "Việt Tiến Client",
+  "description": "Cổng thông tin khách hàng Việt Tiến, tích hợp quản lý tài chính, phòng sự kiện cá cược mô phỏng, đổi mật khẩu và đổi nền sáng tối thuận tiện.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

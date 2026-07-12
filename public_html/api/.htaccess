@@ -1,0 +1,16 @@
+# Chặn truy cập trực tiếp các file nhạy cảm trong thư mục /api
+# (db.sql chứa seed tài khoản admin, không được để lộ ra Internet)
+<FilesMatch "\.(sql|md|json|lock|log|ini)$">
+    Require all denied
+</FilesMatch>
+
+# Tương thích Apache < 2.4
+<IfModule !mod_authz_core.c>
+    <FilesMatch "\.(sql|md|json|lock|log|ini)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</IfModule>
+
+# Không liệt kê thư mục
+Options -Indexes

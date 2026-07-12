@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "AppState": {
+      "title": "AppState",
+      "description": "The centralized database state for users, transactions, bets, and rooms.",
+      "type": "object",
+      "properties": {
+        "accounts": {
+          "type": "object",
+          "description": "User profiles, passwords, bets, and transaction histories indexed by username"
+        },
+        "rooms": {
+          "type": "array",
+          "description": "Active game rooms with their metadata"
+        },
+        "periodsHistory": {
+          "type": "object",
+          "description": "Period results history for Facebook and Youtube rooms"
+        },
+        "forcedNextResult": {
+          "type": "object",
+          "description": "Admin-forced next outcome for rooms"
+        },
+        "allTransactions": {
+          "type": "array",
+          "description": "Global transactions list across all accounts"
+        },
+        "secondsRemaining": {
+          "type": "number",
+          "description": "Remaining seconds of current round"
+        }
+      }
+    }
+  },
+  "firestore": {
+    "app_state/{stateId}": {
+      "schema": "AppState",
+      "description": "Centralized database state document"
+    }
+  }
+}
