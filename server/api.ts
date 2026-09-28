@@ -364,6 +364,9 @@ export function createApiRouter(): Router {
   // Xóa tài khoản (trừ admin)
   router.delete('/admin/users/:username', requireAdmin, async (req, res) => {
     if (req.params.username === 'admin') return res.status(400).json({ message: 'Không thể xóa tài khoản admin chính!' });
+    // Xóa kèm lịch sử để user mới đăng ký trùng username không nhận lại dữ liệu cũ
+    await Transaction.deleteMany({ username: req.params.username });
+    await Bet.deleteMany({ username: req.params.username });
     await User.deleteOne({ username: req.params.username });
     return res.json({ message: `Đã xóa tài khoản @${req.params.username} thành công!` });
   });
