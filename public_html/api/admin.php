@@ -296,6 +296,8 @@ if ($action === 'users-delete') {
         $pdo->prepare("DELETE FROM transactions WHERE username = ?")->execute([$targetUsername]);
         $pdo->prepare("DELETE FROM bets WHERE username = ?")->execute([$targetUsername]);
         $pdo->prepare("DELETE FROM notifications WHERE audience = 'user' AND username = ?")->execute([$targetUsername]);
+        // Yêu cầu nạp/rút, tin nhắn user gửi vào hộp thư admin (chứa SĐT, họ tên, ngân hàng)
+        $pdo->prepare("DELETE FROM notifications WHERE audience = 'admin' AND sender = ?")->execute([$targetUsername]);
         $pdo->prepare("DELETE FROM accounts WHERE username = ?")->execute([$targetUsername]);
         $pdo->commit();
     } catch (Exception $e) {
