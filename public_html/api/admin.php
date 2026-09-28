@@ -289,8 +289,19 @@ if ($action === 'users-delete') {
         sendJsonError('Không thể xóa tài khoản Admin!');
     }
 
-    $stmt = $pdo->prepare("DELETE FROM accounts WHERE username = ?");
-    $stmt->execute([$targetUsername]);
+    // Xóa kèm lịch sử giao dịch, cược và thông báo của user này. Các bảng này liên kết
+    // theo username, nếu để lại thì user mới đăng ký trùng username sẽ nhận luôn lịch sử cũ.
+    $pdo->beginTransaction();
+    try {
+        $pdo->prepare("DELETE FROM transactions WHERE username = ?")->execute([$targetUsername]);
+        $pdo->prepare("DELETE FROM bets WHERE username = ?")->execute([$targetUsername]);
+        $pdo->prepare("DELETE FROM notifications WHERE audience = 'user' AND username = ?")->execute([$targetUsername]);
+        $pdo->prepare("DELETE FROM accounts WHERE username = ?")->execute([$targetUsername]);
+        $pdo->commit();
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        sendJsonError('Lỗi xóa người dùng: ' . $e->getMessage());
+    }
 
     sendJsonSuccess(['success' => true, 'message' => 'Đã xóa người dùng thành công!']);
 }
